@@ -1,0 +1,25 @@
+<h1>我的知识库</h1>
+<hr>
+<form name="fileForm" novalidate >
+  <div class="form-group"
+      ng-class="{'has-error': fileForm.content.$invalid
+        && fileForm.content.$dirty}">
+    <input type="text" class="form-control focus" name="filename"
+        placeholder="文件名" autocomplete="off" required
+        ng-model="file.name">
+    <!--<textarea  class="form-control focus" name="content"
+        placeholder="Content" autocomplete="off" required
+        ng-model="file.content"></textarea>-->
+    <pagedown-editor  name="content" 
+                     placeholder="Content"  ng-model="file.content" 
+                     content="file.content"></pagedown-editor>
+    <span class="has-error control-label" ng-show="
+        fileForm.content.$invalid && fileForm.content.$dirty">
+      Content is required.
+    </span>
+  </div>
+  <button class="btn btn-default" ng-click='getFileContent()'>Load</button>
+  <button class="btn btn-default" ng-click='saveFile()'>Save</button>
+</form>
+<hr>
+
