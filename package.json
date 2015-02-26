@@ -1,5 +1,5 @@
 {
-  "name": "mydemo5",
+  "name": "knl",
   "version": "1.0.0",
   "main": "server/server.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "loopback-datasource-juggler": "^2.7.0",
     "serve-favicon": "^2.0.1",
     "raneto-core": "0.x",
-    "Q": "1.1.2"
+    "q": "1.1.2"
   },
   "optionalDependencies": {
     "loopback-explorer": "^1.1.0"
@@ -25,5 +25,5 @@
     "type": "",
     "url": ""
   },
-  "description": "mydemo5"
+  "description": "knl"
 }

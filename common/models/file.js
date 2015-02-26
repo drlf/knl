@@ -1,6 +1,6 @@
 var raneto = require('raneto-core'),
     fs = require('fs'),
-    Q = require('Q');
+    Q = require('q');
 
 module.exports = function(File) {
     /*File.get = function(cb) {
