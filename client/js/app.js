@@ -2,7 +2,8 @@ angular
   .module('app', [
     'lbServices',
     'ui.router',
-    'ui.pagedown'
+    'ui.pagedown',
+    'ui.tree'
   ])
   .config(['$stateProvider', '$urlRouterProvider', function($stateProvider,
       $urlRouterProvider) {
