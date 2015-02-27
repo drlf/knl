@@ -6,15 +6,27 @@
     "name": {
       "type": "string"
     },
-    "path": {
+    "title": {
       "type": "string"
+    },
+    "path": {
+      "type": "string",
+      id: true
     },
     "content": {
       "type": "string"
+    },
+    "nodes": {
+      "type": "array"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+  	"nodes": {
+          "model": "file",
+          "type": "hasMany"
+        }
+  },
   "acls": [],
   "methods": []
 }
