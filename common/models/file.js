@@ -3,6 +3,7 @@ var raneto = require('raneto-core'),
     Q = require('q');
 
 module.exports = function(File) {
+	var rootPath = "content";
     /*File.get = function(cb) {
      //var page = raneto.getPage('README.md');
       //cb(null, page);
@@ -15,11 +16,16 @@ module.exports = function(File) {
             cb(null,null);
         });
     };*/
+	File.tree = function(cb) {
+		
+		cb(null,loadTreeSync(rootPath));
+	}
+	
     File.get = function(file, cb) {
         var path = file.name;
         var data = fs.readFile(path, function(err, data){
             if(err) {
-                console.error(err);
+                //console.error(err);
                 cb(err);
             } else {
                 //console.log(data);
@@ -29,7 +35,7 @@ module.exports = function(File) {
     };
     
     File.put = function( file, cb) {
-        var data = file.content;
+        var content = file.content;
         var path = file.name;
         //ave(filename, data, cb);
         var data = fs.writeFile(path, content,function(err, resp){
@@ -45,6 +51,14 @@ module.exports = function(File) {
         
     };
      
+    File.remoteMethod(
+            'tree', 
+            {
+              http: {path: '/tree', verb: 'get'},
+              returns: {arg: 'nodes', type: 'array'}
+            }
+        );
+    
     File.remoteMethod(
         'get', 
         {
@@ -71,12 +85,12 @@ module.exports = function(File) {
         });
     }*/
     // TODO 改为异步读取文件。 如上修改后，造成cb丢失，实际上在fs.readFile(path,function(err,data,cb){  处，cb还有值，但是执行完readfile后，cb为undefined。 可能是read先执行完后返回了，异步再执行结束时，原有调用环境已经不存在了。改为promise就好了。
-    read = function(path,cb){
+    /*read = function(path,cb){
         var data = fs.readFileSync(path);
         cb(null,{content: data.toString('utf-8'),path: path, name: path});
-    };
-    
-    loadTree = function(path, recursive){
+    };*/
+    //参考https://github.com/MajorBreakfast/walk-tree-as-promised ，但是似乎使用了同步方法
+    var loadTree = function(path, recursive, cb){
     	var localPaht = path;
     	var data = [];
     	//读取目录下所有文件，过滤器为后缀名.md或为目录
@@ -95,6 +109,22 @@ module.exports = function(File) {
     	};
     	return data;
     }
+    //同步遍历目录树，生成treeNode对象
+    //TODO 实现异步遍历方法，回调函数不清楚怎么写，用promise实现是否更容易些。
+    var loadTreeSync = function(path){
+        var fileList = [];
+        var dirList = fs.readdirSync(path);
+        dirList.forEach(function(item){
+            var newPath = path + '/' + item;
+            if(fs.statSync(newPath).isDirectory()){
+                var nodes = loadTreeSync(newPath);
+                fileList.push({title:newPath,nodes:nodes});
+            }else{
+                fileList.push({title:newPath});
+            }
+        });
+        return fileList;
+    }
     
     /*read = function(path){
         var deferred = Q.defer();
@@ -107,8 +137,8 @@ module.exports = function(File) {
         return deferred.promise;
     };*/
     
-    save = function(path, content, cb){
+    /*save = function(path, content, cb){
         var data = fs.writeFileSync(path, content);
         cb(null,'File saved!');
-    };
+    };*/
 };

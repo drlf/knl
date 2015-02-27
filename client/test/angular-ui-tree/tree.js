@@ -2,7 +2,7 @@
   'use strict';
   
   angular.module('app')
-  .controller('treeCtrl', function($scope) {
+  .controller('treeCtrl', ['$scope', 'File',function($scope, File) {
 
     $scope.remove = function(scope) {
       scope.remove();
@@ -40,59 +40,15 @@
       scope.expandAll();
     };
 
-    $scope.treeData = [{
-      "title": "node1",
-      "nodes": [
-        {
-          "title": "node1.1",
-          "nodes": [
-            {
-              "title": "node1.1.1",
-              "nodes": []
-            }
-          ]
-        },
-        {
-          "title": "node1.2",
-          "nodes": []
-        }
-      ],
-    }, {
-      "id": 2,
-      "title": "node2",
-      "nodes": [
-        {
-          "id": 21,
-          "title": "node2.1",
-          "nodes": []
-        },
-        {
-          "id": 22,
-          "title": "node2.2",
-          "nodes": []
-        }
-      ],
-    }, {
-      "id": 3,
-      "title": "node3",
-      "nodes": [
-        {
-          "id": 31,
-          "title": "node3.1",
-          "nodes": []
-        }
-      ],
-    }, {
-      "id": 4,
-      "title": "node4",
-      "nodes": [
-        {
-          "id": 41,
-          "title": "node4.1",
-          "nodes": []
-        }
-      ],
-    }];
-  });
+    $scope.treeData = [];
+    
+    File.tree()
+    .$promise
+    .then(function(results) {
+      	console.log(results.nodes);
+    	$scope.treeData = results.nodes;
+    });
+    
+  }]);
 
 })();
