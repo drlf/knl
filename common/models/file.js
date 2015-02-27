@@ -57,6 +57,26 @@ module.exports = function(File) {
         cb(null,{content: data.toString('utf-8'),path: path, name: path});
     };
     
+    loadTree = function(path, recursive){
+    	var localPaht = path;
+    	var data = [];
+    	//读取目录下所有文件，过滤器为后缀名.md或为目录
+    	var files = fs.readdirSync(path);
+    	for(file in files){
+    		console.log(file);
+    	}
+    	//如果是递归
+    	if(recursive){
+    		for(file in data){
+    			if(file.isDirectory){
+    				var newPath = localPaht + '/' +file;
+    				file.nodes = loadTree(newPath, recursive);
+    			}
+    		}
+    	};
+    	return data;
+    }
+    
     /*read = function(path){
         var deferred = Q.defer();
         fs.readFile(path,function(error,result){

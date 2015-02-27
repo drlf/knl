@@ -11,7 +11,10 @@
     },
     "path": {
       "type": "string",
-      id: true
+      "id": true
+    },
+    "isDirectory": {
+      "type": "boolean"
     },
     "content": {
       "type": "string"

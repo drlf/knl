@@ -1,7 +1,7 @@
 (function() {
   'use strict';
-
-  angular.module('treeApp', ['ui.tree'])
+  
+  angular.module('app')
   .controller('treeCtrl', function($scope) {
 
     $scope.remove = function(scope) {
@@ -13,8 +13,8 @@
     };
 
     $scope.moveLastToTheBegginig = function () {
-      var a = $scope.data.pop();
-      $scope.data.splice(0,0, a);
+      var a = $scope.treeData.pop();
+      $scope.treeData.splice(0,0, a);
     };
 
     $scope.newSubItem = function(scope) {
@@ -40,7 +40,7 @@
       scope.expandAll();
     };
 
-    $scope.data = [{
+    $scope.treeData = [{
       "title": "node1",
       "nodes": [
         {

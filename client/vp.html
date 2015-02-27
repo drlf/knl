@@ -9,6 +9,8 @@
     <!-- Bootstrap -->
     <link href="vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="vendor/angular-ui-tree/dist/angular-ui-tree.min.css">
+    <link rel="stylesheet" href="vendor/angular-ui-tree/demo/css/demo.css">
+    
       <link href="vendor/angular-pagedown/angular-pagedown.css" rel="stylesheet">
       
     <link href="css/styles.css" rel="stylesheet">
@@ -29,26 +31,29 @@
       </div>
     </div>
 
-    <div class="container">
-    	<div class="row">
+    <div class="container-fluid">
+    	<div class="row-fluid">
 	    	<!-- Nested node template -->
-<script type="text/ng-template" id="nodes_renderer.html">
-  <div ui-tree-handle>
-    {{node.title}}
-  </div>
-  <ol ui-tree-nodes="" ng-model="node.nodes">
-    <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
-    </li>
-  </ol>
-</script>
-<div ui-tree class="col-md-2">
-  <ol ui-tree-nodes="" ng-model="treeData" id="tree-root">
-    <li ng-repeat="node in treeData" ui-tree-node ng-include="'nodes_renderer.html'"></li>
-  </ol>
-</div>
-	    	
-	        <div ui-view class="col-md-10"></div>
-      	</div>
+
+			<script type="text/ng-template" id="nodes_renderer.html">
+          <div ui-tree-handle class="tree-node tree-node-content">
+            <a class="btn btn-success btn-xs" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span></a>
+            {{node.title}}
+            <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>
+          </div>
+          <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+            <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+            </li>
+          </ol>
+        </script>
+        <div ui-tree id="tree-root" class="col-md-4" ng-controller="treeCtrl">
+          <ol ui-tree-nodes="" ng-model="treeData" id="tree-root">
+            <li ng-repeat="node in treeData" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+          </ol>
+        </div>
+	    <div ui-view class="col-md-8"></div>
+      </div>
     </div>
 
     <script src="vendor/jquery/dist/jquery.js"></script>
@@ -64,9 +69,14 @@
       <script src="vendor/pagedown/Markdown.Extra.js"></script>
       <script src="vendor/pagedown/Markdown.Editor.js"></script>
       <script src="vendor/angular-pagedown/angular-pagedown.js"></script>
-            
+      
+  <script type="text/javascript" src="vendor/angular-ui-tree/dist/angular-ui-tree.js"></script>
+  
+      
     <script src="js/services/lb-services.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controllers/file.js"></script>
+    <!-- TODO remove test.js -->
+  <script type="text/javascript" src="test/angular-ui-tree/tree.js"></script>
   </body>
 </html>
