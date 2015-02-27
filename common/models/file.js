@@ -16,14 +16,33 @@ module.exports = function(File) {
         });
     };*/
     File.get = function(file, cb) {
-        var filename = file.name;
-        read(filename, cb);
+        var path = file.name;
+        var data = fs.readFile(path, function(err, data){
+            if(err) {
+                console.error(err);
+                cb(err);
+            } else {
+                //console.log(data);
+                cb(null,{content: data.toString('utf-8'),path: path, name: path});
+            }
+        });
     };
     
     File.put = function( file, cb) {
         var data = file.content;
-        var filename = file.name;
-        save(filename, data, cb);
+        var path = file.name;
+        //ave(filename, data, cb);
+        var data = fs.writeFile(path, content,function(err, resp){
+            if(err) {
+                console.error(err);
+                cb(err);
+            } else {
+                console.log('file saved!');
+                console.log(resp);
+                cb(null,'File saved!');
+            }
+        });
+        
     };
      
     File.remoteMethod(
