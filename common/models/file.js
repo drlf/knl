@@ -2,13 +2,16 @@ var raneto = require('raneto-core'),
     fs = require('fs'),
     Q = require('q');
 
+//file 自定义方法
 module.exports = function(File) {
 	var rootPath = "content";
     
+    //获取目录树
     File.tree = function(cb) {
 		cb(null,loadTreeSync(rootPath));
 	}
 	
+    //获取文件内容
     File.get = function(file, cb) {
         var path = file.path;
         var data = fs.readFile(path, function(err, data){
@@ -22,23 +25,39 @@ module.exports = function(File) {
         });
     };
     
+    //修改文件内容
     File.put = function( file, cb) {
         var content = file.content;
         var path = file.name;
         //ave(filename, data, cb);
         var data = fs.writeFile(path, content,function(err, resp){
             if(err) {
-                console.error(err);
+                //console.error(err);
                 cb(err);
             } else {
-                console.log('file saved!');
-                console.log(resp);
+                //console.log('file saved!');
+                //console.log(resp);
                 cb(null,'File saved!');
             }
         });
         
     };
      
+    //删除文件
+    File.delete = function(file, cb){
+        //console.log(file);
+        //var path = file.path;
+        deleteFile(file, cb);
+    }
+    
+    //重命名文件
+    File.rename = function(file, newName, cb){
+        var oldPath = file.path;
+        //TODO 利用oldPath获得目录，与newName组装成新文件名，要求判断是否.md结尾
+        var newPaht = file.path + newName;
+         renameFile(oldPath, newPath, cb);
+    }
+    
     File.remoteMethod(
             'tree', 
             {
@@ -61,6 +80,26 @@ module.exports = function(File) {
         {
           accepts: {arg: 'file', type: 'object'},
           http: {path: '/', verb: 'put'},
+          returns: {arg: 'message', type: 'string'}
+        }
+    );
+    
+    File.remoteMethod(
+        'delete', 
+        {
+          accepts: {arg: 'file', type: 'object'},
+          http: {path: '/', verb: 'delete'},
+          returns: {arg: 'message', type: 'string'}
+        }
+    );
+    
+    File.remoteMethod(
+        'rename', 
+        {
+            accepts: [
+               {arg: 'file', type: 'object'},
+               {arg: 'newName', type: 'string'}
+            ],
           returns: {arg: 'message', type: 'string'}
         }
     );
@@ -92,8 +131,30 @@ module.exports = function(File) {
             }
             fileList.push(file);
         });
-        console.log(fileList);
+        //console.log(fileList);
         return fileList;
+    }
+    
+    var deleteFile = function(file, cb){
+        var fn = function(err){
+            if(err) {
+                cb(err);
+            } else {
+                cb(null, "删除成功");
+            }
+        };
+        if(file.isDirectory)fs.rmdir(file.path, fn);
+        else fs.unlink(file.path, fn);
+    }
+    
+    var renameFile = function(oldPath, newPath, cb){
+        fs.rename(oldPath, newPath, function(err){
+            if(err) {
+                cb(err);
+            } else {
+                cb(null,"重命名成功.");
+            }
+        });
     }
     
     

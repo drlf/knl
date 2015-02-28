@@ -4,11 +4,27 @@
   angular.module('app')
   .controller('treeCtrl', ['$scope','$rootScope', 'File',function($scope, $rootScope,File) {
 
-    $scope.remove = function(scope) {
-      scope.remove();
+    $scope.remove1 = function(scope, $event) {
+        var nodeData = scope.$modelValue;
+        //有子节点不能删除，暂时简单实现，后续添加递归删除。
+        if(nodeData.nodes && nodeData.nodes.length>0){
+            //对话框提示存在子节点，不能删除。
+            return;
+        };
+        $event.stopPropagation();
+        //console.log(nodeData);
+        //先删除服务器上的文件，后移除页面上的节点。可以加上等待光标，表示正在进行费时操作。
+        File.remove({file: nodeData})
+        .$promise
+        .then(function(results) {
+            scope.remove();
+        });
+        
+     
     };
 
     $scope.toggle = function(scope) {
+        console.log('toggle');
       scope.toggle();
     };
 
@@ -41,8 +57,9 @@
     };
 
     $scope.selectFile = function(scope) {
-    	var nodeData = scope.$modelValue;
-        var file = {name:nodeData.title, title:nodeData.title, path:nodeData.path};
+        //console.log('selectFile');
+    	var file = scope.$modelValue;
+        //var file = {name:nodeData.title, title:nodeData.title, path:nodeData.path, isDirectory:nodeData.isDirectory};
         
         //console.log(file);
         if(!file.isDirectory)$rootScope.$broadcast('LoadFile', file);
@@ -55,7 +72,7 @@
     File.tree()
     .$promise
     .then(function(results) {
-      	console.log(results.nodes);
+      	//console.log(results.nodes);
     	$scope.treeData = results.nodes;
     });
     
