@@ -4,32 +4,20 @@ var raneto = require('raneto-core'),
 
 module.exports = function(File) {
 	var rootPath = "content";
-    /*File.get = function(cb) {
-     //var page = raneto.getPage('README.md');
-      //cb(null, page);
-        read('README.md').then(function(result){
-          cb(null,{content: result.toString('utf-8'),path: path, name: path});
-            
-        },function(error){
-          console.log("invoke in deferd".red);
-          console.log(error.toString().red);
-            cb(null,null);
-        });
-    };*/
-	File.tree = function(cb) {
-		
+    
+    File.tree = function(cb) {
 		cb(null,loadTreeSync(rootPath));
 	}
 	
     File.get = function(file, cb) {
-        var path = file.name;
+        var path = file.path;
         var data = fs.readFile(path, function(err, data){
             if(err) {
                 //console.error(err);
                 cb(err);
             } else {
                 //console.log(data);
-                cb(null,{content: data.toString('utf-8'),path: path, name: path});
+                cb(null,{content: data.toString('utf-8'),path: path, name: file.name});
             }
         });
     };
@@ -77,6 +65,37 @@ module.exports = function(File) {
         }
     );
     
+    //file的附加属性 参考http://nodejs.cn/api/fs/#fs_class_fs_stats
+    var applyFile = function(file, fileStat){
+        file.birthtime = fileStat.birthtime;   //文件创建时间
+        file.mtime = fileStat.mtime; //最后修改时间
+        file.atime = fileStat.atime;   //最后访问时间
+        file.isDirectory = fileStat.isDirectory();
+        file.size = fileStat.size;
+        return file;
+    };
+    
+    //同步遍历目录树，生成treeNode对象
+    //TODO 实现异步遍历方法，回调函数不清楚怎么写，用promise实现是否更容易些。
+    var loadTreeSync = function(path){
+        var fileList = [];
+        var dirList = fs.readdirSync(path);
+        dirList.forEach(function(item){
+            var newPath = path + '/' + item;
+            var fileStat = fs.statSync(newPath);
+            var file = {name:item, title:item, path: newPath};
+            applyFile(file, fileStat);
+            if(fileStat.isDirectory()){
+                var nodes = loadTreeSync(newPath);
+                //fileList.push({title:item, path: newPath, nodes:nodes});
+                file.nodes = nodes;
+            }
+            fileList.push(file);
+        });
+        console.log(fileList);
+        return fileList;
+    }
+    
     
     /*read = function(path,cb){
         fs.readFile(path,function(err,data,cb){
@@ -90,7 +109,7 @@ module.exports = function(File) {
         cb(null,{content: data.toString('utf-8'),path: path, name: path});
     };*/
     //参考https://github.com/MajorBreakfast/walk-tree-as-promised ，但是似乎使用了同步方法
-    var loadTree = function(path, recursive, cb){
+    /*var loadTree = function(path, recursive, cb){
     	var localPaht = path;
     	var data = [];
     	//读取目录下所有文件，过滤器为后缀名.md或为目录
@@ -108,23 +127,7 @@ module.exports = function(File) {
     		}
     	};
     	return data;
-    }
-    //同步遍历目录树，生成treeNode对象
-    //TODO 实现异步遍历方法，回调函数不清楚怎么写，用promise实现是否更容易些。
-    var loadTreeSync = function(path){
-        var fileList = [];
-        var dirList = fs.readdirSync(path);
-        dirList.forEach(function(item){
-            var newPath = path + '/' + item;
-            if(fs.statSync(newPath).isDirectory()){
-                var nodes = loadTreeSync(newPath);
-                fileList.push({title:newPath,nodes:nodes});
-            }else{
-                fileList.push({title:newPath});
-            }
-        });
-        return fileList;
-    }
+    }*/
     
     /*read = function(path){
         var deferred = Q.defer();

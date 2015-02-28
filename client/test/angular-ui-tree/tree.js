@@ -2,7 +2,7 @@
   'use strict';
   
   angular.module('app')
-  .controller('treeCtrl', ['$scope', 'File',function($scope, File) {
+  .controller('treeCtrl', ['$scope','$rootScope', 'File',function($scope, $rootScope,File) {
 
     $scope.remove = function(scope) {
       scope.remove();
@@ -40,6 +40,16 @@
       scope.expandAll();
     };
 
+    $scope.selectFile = function(scope) {
+    	var nodeData = scope.$modelValue;
+        var file = {name:nodeData.title, title:nodeData.title, path:nodeData.path};
+        
+        //console.log(file);
+        if(!file.isDirectory)$rootScope.$broadcast('LoadFile', file);
+        //var fc_scope =  angular.element(fileView).scope();
+        //if(!file.isDirectory)fc_scope.$emit('LoadFile', file);
+	  };
+      
     $scope.treeData = [];
     
     File.tree()

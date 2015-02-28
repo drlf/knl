@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>我的知识库</title>
+    <title>知识库</title>
 
     <!-- Bootstrap -->
     <link href="vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
@@ -36,7 +36,7 @@
 	    	<!-- Nested node template -->
 
 			<script type="text/ng-template" id="nodes_renderer.html">
-          <div ui-tree-handle class="tree-node tree-node-content">
+          <div ui-tree-handle class="tree-node tree-node-content" ng-click="selectFile(this)">
             <a class="btn btn-success btn-xs" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span></a>
             {{node.title}}
             <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
@@ -47,12 +47,12 @@
             </li>
           </ol>
         </script>
-        <div ui-tree id="tree-root" class="col-md-4" ng-controller="treeCtrl">
+        <div ui-tree id="tree-root" class="col-md-4" ng-controller="treeCtrl" data-drag-enabled="false">
           <ol ui-tree-nodes="" ng-model="treeData" id="tree-root">
-            <li ng-repeat="node in treeData" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+            <li ng-repeat="node in treeData" ui-tree-node ng-include="'nodes_renderer.html'" ></li>
           </ol>
         </div>
-	    <div ui-view class="col-md-8"></div>
+	    <div ui-view class="col-md-8" id="fileView"></div>
       </div>
     </div>
 

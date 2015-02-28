@@ -1,12 +1,12 @@
-<h1>我的知识库</h1>
+<h1>{{file.title}}</h1>
 <hr>
 <form name="fileForm" novalidate >
   <div class="form-group"
       ng-class="{'has-error': fileForm.content.$invalid
         && fileForm.content.$dirty}">
-    <input type="text" class="form-control focus" name="filename"
+    <!--<input type="text" class="form-control focus" name="filename"
         placeholder="文件名" autocomplete="off" required
-        ng-model="file.name">
+        ng-model="file.name">-->
     <!--<textarea  class="form-control focus" name="content"
         placeholder="Content" autocomplete="off" required
         ng-model="file.content"></textarea>-->
@@ -18,8 +18,8 @@
       Content is required.
     </span>
   </div>
-  <button class="btn btn-default" ng-click='getFileContent()'>Load</button>
-  <button class="btn btn-default" ng-click='saveFile()'>Save</button>
+  <button class="btn btn-default" ng-click='loadFileContent()'>重新加载</button>
+  <button class="btn btn-default" ng-click='saveFileContent()'>保存</button>
 </form>
 <hr>
 

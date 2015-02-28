@@ -3,32 +3,28 @@ angular
   .controller('FileController', ['$scope', '$state', 'File', function($scope,
       $state, File) {
     $scope.files = [];
-		$scope.file = {name:'README.md',path:'README.md',content:''};
+		$scope.file = {};
 	
-    $scope.getFileContent = function(){
-    	/*File.get()
-    	.then(function(results) {
-            console.log(results);
-          $scope.file = results;
-        });*/
-        /*var ret = File.get();
-        console.log(ret);*/
-        $scope.file = {name:$scope.file.name};
+    $scope.$on("LoadFile", function(eve, file) {
+        //文件改变才刷新
+        if(file.name!=$scope.file.name && file.path !=$scope.file.path )
+            $scope.file = file;
+            $scope.loadFileContent();
+        });
+      
+    $scope.loadFileContent = function(){
         File.get({file: $scope.file})
         .$promise
         .then(function(results) {
-            //console.log(results.file.content);
-            $scope.file = results.file;
+            $scope.file.content = results.file.content;
         });
     };
     
       
-    $scope.saveFile = function(){
-        //console.log($scope.file.content);
+    $scope.saveFileContent = function(){
     	File.put({file: $scope.file})
         .$promise
     	.then(function(results) {
-          //$scope.file = results;
             console.log(results);
           console.log('Save file successed!');
         });
