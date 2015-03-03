@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>文档阅读</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/dist/css/bootstrap.min.css">
+</head>
+
+<body ng-app="vfApp">
+    
+    <div class="container-fluid" ng-controller="FileViewController">
+        <div class="row">
+            <div btf-markdown="fileContent" ></div>
+        </div>
+    </div>
+
+    <script src="vendor/angular/angular.min.js"></script>
+    <script src="module/angular-list-x/angular.listx.js"></script>
+    <script src="vendor/angular-resource/angular-resource.js"></script>
+    <!--<script src="vendor/angular-ui-router/release/angular-ui-router.js"></script>-->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>-->
+    
+    <script src="vendor/angular-sanitize/angular-sanitize.js"></script>
+	<script src="vendor/showdown/compressed/showdown.js"></script>
+	<script src="vendor/showdown/compressed/extensions/prettify.min.js"></script>
+	<script src="vendor/angular-markdown-directive/markdown.js"></script>
+    
+    <script src="js/services/lb-services.js"></script>
+    <script src="js/vfApp.js"></script>
+</body>
+
+</html>
