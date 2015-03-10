@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>知识库</title>
+    <!-- Bootstrap -->
+    <link href="vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    
+  </head>
+  <body ng-app="treeApp">
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Nodejs support knowledge base</a>
+        </div>
+      </div>
+    </div>
+<br/>
+<br/>
+<br/>
+<br/>
+
+    <div class="container-fluid" ng-controller="treeController">
+    
+      <div class="row-fluid">
+        <div class="col-md-4" id="treeView">treeView</div>
+        <div class="col-md-8">
+        <div class="btn-toolbar">
+          <div class="btn-group">
+		   <button class="btn btn-default" ng-click='loadFileContent()'>重新加载</button>
+  			<button class="btn btn-default" ng-click='saveFileContent()'>保存</button>
+		  </div>
+		</div>
+	    <div class="col-md-8"  id="fileView"></div>
+	    <textarea ng-model="fileContent" id="fileViewTextarea">ccccc</textarea>
+	    </div>
+      </div>
+    </div>
+
+    <!-- <script src="vendor/jquery/dist/jquery.js"></script>
+    <script src="vendor/bootstrap/dist/js/bootstrap.js"></script> -->
+    <script src="vendor/angular/angular.js"></script>
+    <script src="vendor/angular-resource/angular-resource.js"></script>
+    <script src="vendor/angular-ui-router/release/angular-ui-router.js"></script>
+    
+    <script src="vendor/epiceditor/epiceditor/js/epiceditor.min.js"></script>
+    
+    <script src="js/services/lb-services.js"></script>
+    <script src="js/treeApp.js"></script>
+    <!-- <script src="js/controllers/file.js"></script>
+  <script type="text/javascript" src="js/controllers/tree.js"></script> -->
+   <script>
+		   
+   </script>
+  </body>
+</html>
