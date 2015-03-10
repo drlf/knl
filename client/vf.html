@@ -3,22 +3,29 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文档阅读</title>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/dist/css/bootstrap.min.css">
 </head>
 
-<body ng-app="vfApp">
-    
-    <div class="container-fluid" ng-controller="FileViewController">
-        <div class="row">
+<body ng-app="vfApp" ng-controller="FileViewController">
+    <div class="btn-group" style="float:right">
+      <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> 编 辑</button>
+      <button type="button" class="btn btn-default" ng-click="goBack()"><span class="glyphicon glyphicon-share-alt"></span>目录列表</button>
+    </div>
+
+    <div class="panel panel-default" >
+        <div class="panel-heading">
+            <h3 class="panel-title">{{fileName}}</h3>
+          </div>
+        <div class="panel-body">
             <div btf-markdown="fileContent" ></div>
         </div>
     </div>
 
     <script src="vendor/angular/angular.min.js"></script>
-    <script src="module/angular-list-x/angular.listx.js"></script>
     <script src="vendor/angular-resource/angular-resource.js"></script>
     <!--<script src="vendor/angular-ui-router/release/angular-ui-router.js"></script>-->
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>

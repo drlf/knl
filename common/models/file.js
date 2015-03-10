@@ -4,31 +4,74 @@ var raneto = require('raneto-core'),
 
 //file 自定义方法
 module.exports = function(File) {
-	var rootPath = "content";
+	var rootPath = "content"; //depreced! recommed to use basePath
+    var basePath = "content";
+    
+    function getRealPath(uriPath){
+        var d = String.fromCharCode(uriPath);
+        console.log(d);
+        if(uriPath.indexOf('/') !=0 )return basePath + '/' + uriPath;
+        return basePath + uriPath;
+    }
     
     //获取目录树
     File.tree = function(cb) {
 		cb(null,loadTreeSync(rootPath));
 	}
 	
+    
+    
+    //获取目录列表
+    File.list = function(path, cb) {
+		cb(null,loadListSync(path));
+	}
+	
     //获取文件内容
     File.get = function(file, cb) {
-        var path = file.path;
+        var path = getRealPath(file.path);
         var data = fs.readFile(path, function(err, data){
             if(err) {
                 //console.error(err);
                 cb(err);
             } else {
                 //console.log(data);
-                cb(null,{content: data.toString('utf-8'),path: path, name: file.name});
+                cb(null,{content: data.toString('utf-8'),path: file.path, name: file.name});
             }
         });
+    };
+    
+    var returnMsg = function(cb){
+        var fn = function(err){
+        if(err) {
+                cb(err);
+            } else {
+                cb(null, "操作成功！");
+            }
+        }
+        return fn;
+    }
+    
+    //创建文件或文件夹，根据file的isDirectory来判断是否文件夹
+    File.post = function( file, cb) {
+        var content = file.content;
+        var path = getRealPath(file.path);
+        if(file.isDirectory){
+            //创建目录
+            //console.log('create folder: ', file);
+            fs.mkdir(path,returnMsg( cb));
+        }else{
+            //创建文件
+           //console.log('create file: ', file);
+            //fs.writeFileSync(path,content);
+            fs.writeFile(path,returnMsg( cb));
+        }
+        
     };
     
     //修改文件内容
     File.put = function( file, cb) {
         var content = file.content;
-        var path = file.name;
+        var path = getRealPath(file.path);
         //ave(filename, data, cb);
         var data = fs.writeFile(path, content,function(err, resp){
             if(err) {
@@ -54,7 +97,7 @@ module.exports = function(File) {
     File.rename = function(file, newName, cb){
         var oldPath = file.path;
         //TODO 利用oldPath获得目录，与newName组装成新文件名，要求判断是否.md结尾
-        var newPaht = file.path + newName;
+        var newPath = getParentPath(file.path) +'/' + newName;
          renameFile(oldPath, newPath, cb);
     }
     
@@ -67,11 +110,29 @@ module.exports = function(File) {
         );
     
     File.remoteMethod(
+            'list', 
+            {
+             accepts: {arg: 'path', type: 'string'},
+              http: {path: '/list', verb: 'get'},
+              returns: {arg: 'nodes', type: 'array'}
+            }
+        );
+    
+    File.remoteMethod(
         'get', 
         {
             accepts: {arg: 'file', type: 'object'},
           http: {path: '/', verb: 'get'},
           returns: {arg: 'file', type: 'object'}
+        }
+    );
+    
+    File.remoteMethod(
+        'post', 
+        {
+          accepts: {arg: 'file', type: 'object'},
+          http: {path: '/', verb: 'post'},
+          returns: {arg: 'message', type: 'string'}
         }
     );
     
@@ -116,11 +177,12 @@ module.exports = function(File) {
     
     //同步遍历目录树，生成treeNode对象
     //TODO 实现异步遍历方法，回调函数不清楚怎么写，用promise实现是否更容易些。
-    var loadTreeSync = function(path){
+    var loadTreeSync = function(uriPath){
         var fileList = [];
+        var path = getRealPath(uriPath);
         var dirList = fs.readdirSync(path);
         dirList.forEach(function(item){
-            var newPath = path + '/' + item;
+            var newPath = uriPath + '/' + item;
             var fileStat = fs.statSync(newPath);
             var file = {name:item, title:item, path: newPath};
             applyFile(file, fileStat);
@@ -135,7 +197,26 @@ module.exports = function(File) {
         return fileList;
     }
     
+    //同步生成uriPath目录下的文件列表，返回file数组
+    var loadListSync = function(uriPath){
+        var fileList = [];
+        var path = getRealPath(uriPath);
+        //console.log('loadListSync: '+path);
+        var dirList = fs.readdirSync(path);
+        dirList.forEach(function(item){
+            var newPath = uriPath + '/' + item;
+            var fileStat = fs.statSync(getRealPath(newPath));
+            var file = {name:item, title:item, path: newPath};
+            applyFile(file, fileStat);
+            fileList.push(file);
+        });
+        //console.log(fileList);
+        return fileList;
+    }
+    
     var deleteFile = function(file, cb){
+        var path = getRealPath(file.path);
+        //console.log('delete file....', path);
         var fn = function(err){
             if(err) {
                 cb(err);
@@ -143,12 +224,14 @@ module.exports = function(File) {
                 cb(null, "删除成功");
             }
         };
-        if(file.isDirectory)fs.rmdir(file.path, fn);
-        else fs.unlink(file.path, fn);
+        if(file.isDirectory)fs.rmdir(path, fn);
+        else fs.unlink(path, fn);
     }
     
     var renameFile = function(oldPath, newPath, cb){
-        fs.rename(oldPath, newPath, function(err){
+        var _oldPath = getRealPath(oldPath);
+        var _newPath = getRealPath(newPath);
+        fs.rename(_oldPath, _newPath, function(err){
             if(err) {
                 cb(err);
             } else {
@@ -157,7 +240,13 @@ module.exports = function(File) {
         });
     }
     
-    
+    //获得父目录
+    function getParentPath(path){
+        if(path == '/')return '/';
+        var index = path.lastIndexOf('/');
+        if(index<=0)return '/'
+         return path.substr(0, index);;
+    }
     /*read = function(path,cb){
         fs.readFile(path,function(err,data,cb){
             if(err) throw err;

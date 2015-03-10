@@ -8,7 +8,8 @@ angular.module('vfApp').
 		  });
 		}])
     .controller('FileViewController', ['$scope', '$window', 'File', function ($scope, $window, File) {
-    $scope.fileContent = 'fsdfsdfsd';
+    $scope.fileContent = '';
+    $scope.fileName = '';
 
     var url = $window.location.href;
     var filePath = getPathFromUri(url);
@@ -21,6 +22,7 @@ angular.module('vfApp').
         .$promise
         .then(function (results) {
             $scope.fileContent = results.file.content;
+            $scope.fileName = getFileName(filePath);
         });
     }
     
@@ -33,6 +35,28 @@ angular.module('vfApp').
         }
         return paraObj['file'];
     };
+    
+    //结束浏览文件，回到目录列表   
+    $scope.goBack = function(){
+        var path = getParentPath(filePath);
+        $window.location.href = 'mv_new.html?path='+path;
+    }
+    
+    //从目录中获取文件名
+    function getFileName(path){
+        if(path == '/')return '/';
+        var index = path.lastIndexOf('/');
+        if(index<=0)return '/'
+         return path.substr(index +1, path.length);
+    }
+        
+    //获取文件的父目录
+    function getParentPath(path){
+        if(path == '/')return '/';
+        var index = path.lastIndexOf('/');
+        if(index<=0)return '/'
+         return path.substr(0, index);;
+    }
 
     
   }]);
