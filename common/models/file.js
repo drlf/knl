@@ -4,19 +4,18 @@ var raneto = require('raneto-core'),
 
 //file 自定义方法
 module.exports = function(File) {
-	var rootPath = "content"; //depreced! recommed to use basePath
     var basePath = "content";
     
     function getRealPath(uriPath){
         var d = String.fromCharCode(uriPath);
-        console.log(d);
+        //console.log(d);
         if(uriPath.indexOf('/') !=0 )return basePath + '/' + uriPath;
         return basePath + uriPath;
     }
     
     //获取目录树
     File.tree = function(cb) {
-		cb(null,loadTreeSync(rootPath));
+		cb(null,loadTreeSync('/'));
 	}
 	
     
@@ -183,7 +182,7 @@ module.exports = function(File) {
         var dirList = fs.readdirSync(path);
         dirList.forEach(function(item){
             var newPath = uriPath + '/' + item;
-            var fileStat = fs.statSync(newPath);
+            var fileStat = fs.statSync(getRealPath(newPath));
             var file = {name:item, title:item, path: newPath};
             applyFile(file, fileStat);
             if(fileStat.isDirectory()){
