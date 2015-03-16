@@ -1,15 +1,14 @@
 var raneto = require('raneto-core'),
     fs = require('fs'),
+    marked = require('marked'),
     Q = require('q');
 
 //file 自定义方法
 module.exports = function(File) {
-	var rootPath = "content"; //depreced! recommed to use basePath
     var basePath = "content";
     
     function getRealPath(uriPath){
         var d = String.fromCharCode(uriPath);
-        console.log(d);
         if(uriPath.indexOf('/') !=0 )return basePath + '/' + uriPath;
         return basePath + uriPath;
     }
@@ -35,7 +34,14 @@ module.exports = function(File) {
                 cb(err);
             } else {
                 //console.log(data);
-                cb(null,{content: data.toString('utf-8'),path: file.path, name: file.name});
+            	if(file.type=='html'){
+            		var content = raneto.processVars(data.toString('utf-8'));
+            		var html = marked(content);
+            		console.log('rento html....',html);
+                    cb(null,{content: html,path: file.path, name: file.name});
+            	}else{
+            		cb(null,{content: data.toString('utf-8'),path: file.path, name: file.name});
+            	}
             }
         });
     };
@@ -183,7 +189,7 @@ module.exports = function(File) {
         var dirList = fs.readdirSync(path);
         dirList.forEach(function(item){
             var newPath = uriPath + '/' + item;
-            var fileStat = fs.statSync(newPath);
+            var fileStat = fs.statSync(getRealPath(newPath));
             var file = {name:item, title:item, path: newPath};
             applyFile(file, fileStat);
             if(fileStat.isDirectory()){
