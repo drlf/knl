@@ -15,7 +15,7 @@ module.exports = function(File) {
     
     //获取目录树
     File.tree = function(cb) {
-		cb(null,loadTreeSync(rootPath));
+		cb(null,loadTreeSync('/'));
 	}
 	
     

@@ -22,7 +22,11 @@
     "loopback-explorer": "^1.1.0"
   },
   "devDependencies": {
+<<<<<<< HEAD
   "jasmine-core": "^2.2.0",
+=======
+    "jasmine-core": "^2.2.0",
+>>>>>>> branch 'master' of git@github.com:drlf/knl.git
     "jshint": "^2.5.6",
     "karma": "~0.10",
     "karma-chrome-launcher": "^0.1.7",
