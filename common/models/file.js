@@ -37,7 +37,7 @@ module.exports = function(File) {
             	if(file.type=='html'){
             		var content = raneto.processVars(data.toString('utf-8'));
             		var html = marked(content);
-            		console.log('rento html....',html);
+            		//console.log('rento html....',html);
                     cb(null,{content: html,path: file.path, name: file.name});
             	}else{
             		cb(null,{content: data.toString('utf-8'),path: file.path, name: file.name});
