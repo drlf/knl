@@ -4,7 +4,7 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "postinstall": "bower install",
+    "postinstall": ""./node_modules/bower/bin/bower install"  ",
     "pretest": "jshint ."
   },
   "dependencies": {
@@ -17,7 +17,8 @@
     "raneto-core": "0.x",
     "q": "1.1.2",
     "marked": "^0.3.2",
-    "html2markdown": "1.1.0"
+    "html2markdown": "1.1.0",
+    "bower": "*"
   },
   "optionalDependencies": {
     "loopback-explorer": "^1.1.0"
