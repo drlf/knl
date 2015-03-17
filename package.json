@@ -4,6 +4,7 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
+    "postinstall": "bower install"
     "pretest": "jshint ."
   },
   "dependencies": {
